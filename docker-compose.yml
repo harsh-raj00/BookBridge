@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  bookbridge:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./uploads:/app/uploads
+      - ./bookbridge.db:/app/bookbridge.db
+    env_file:
+      - .env
+    restart: unless-stopped

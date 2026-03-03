@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="BookBridge — Buy, sell academic books and share study resources in one platform.">
+    <title>BookBridge — Academic Book Marketplace & StudyVault</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- ═══ Toast Container ═══ -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         AUTH PAGE — Book background + glassmorphism login card
+         ═══════════════════════════════════════════════════════════════ -->
+    <div id="authPage" class="auth-page">
+        <!-- Book background image -->
+        <div class="auth-bg" style="background-image: url('books_bg.png');"></div>
+        <div class="auth-bg-overlay"></div>
+
+        <div class="auth-container">
+            <div class="auth-card">
+                <div class="auth-logo">
+                    <div class="auth-logo-icon">📚</div>
+                    <h1>BookBridge</h1>
+                    <p>Your Academic Marketplace & Study Hub</p>
+                </div>
+
+                <div class="auth-tabs">
+                    <button class="auth-tab active" onclick="switchAuthTab('login')">Login</button>
+                    <button class="auth-tab" onclick="switchAuthTab('register')">Register</button>
+                </div>
+
+                <!-- Login Form -->
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" class="form-input" id="loginEmail" placeholder="you@college.edu" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" class="form-input" id="loginPassword" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg" style="width:100%;"
+                        id="loginBtn">Login</button>
+                </form>
+
+                <!-- Register Form -->
+                <form id="registerForm" class="hidden" onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" class="form-input" id="regName" placeholder="John Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" class="form-input" id="regEmail" placeholder="you@college.edu" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" class="form-input" id="regPassword" placeholder="Min 6 characters"
+                            required minlength="6">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg" style="width:100%;" id="regBtn">Create
+                        Account</button>
+                </form>
+
+                <div class="auth-footer">
+                    <p id="authFooterText">Don't have an account? <a href="#" onclick="switchAuthTab('register')">Sign
+                            up</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         APP (after login)
+         ═══════════════════════════════════════════════════════════════ -->
+    <div id="appPage" class="hidden">
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <span>📚 BookBridge</span>
+            </div>
+            <div class="navbar-nav">
+                <a href="#" class="nav-link active" onclick="showSection('dashboard')" data-section="dashboard">🏠 <span
+                        class="nav-link-text">Home</span></a>
+                <a href="#" class="nav-link" onclick="showSection('buy')" data-section="buy">🛒 <span
+                        class="nav-link-text">Buy Books</span></a>
+                <a href="#" class="nav-link" onclick="showSection('sell')" data-section="sell">💰 <span
+                        class="nav-link-text">Sell Books</span></a>
+                <a href="#" class="nav-link" onclick="showSection('vault')" data-section="vault">📝 <span
+                        class="nav-link-text">StudyVault</span></a>
+                <div class="nav-user">
+                    <span class="nav-user-name" id="navUserName"></span>
+                    <button class="btn btn-sm btn-secondary" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="container">
+
+                <!-- ═══ DASHBOARD — Two Big Boxes ═══ -->
+                <section id="dashboardSection">
+                    <div class="dashboard-hero">
+                        <h1>Welcome back, <span id="heroUserName"></span> 👋</h1>
+                        <p>Choose what you want to do today</p>
+                    </div>
+
+                    <div class="stats-grid" id="statsGrid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="statTotalBooks">0</div>
+                            <div class="stat-label">Books Listed</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="statMyBooks">0</div>
+                            <div class="stat-label">My Listings</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="statResources">0</div>
+                            <div class="stat-label">Study Resources</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="statMyUploads">0</div>
+                            <div class="stat-label">My Uploads</div>
+                        </div>
+                    </div>
+
+                    <!-- ═══ TWO BIG ACTION BOXES ═══ -->
+                    <div class="two-boxes">
+                        <!-- Box 1: Buy & Sell Books -->
+                        <div class="action-box action-box-books" onclick="showSection('buy')">
+                            <div class="action-box-bg">
+                                <img src="books_bg.png" alt="Books">
+                            </div>
+                            <div class="action-box-content">
+                                <div class="action-box-icon">📖</div>
+                                <h2>Buy & Sell Books</h2>
+                                <p>Browse & buy affordable textbooks or list your used books for sale. Engineering,
+                                    Medical, Competitive Exams & more.</p>
+                                <div class="action-box-actions">
+                                    <button class="btn btn-primary"
+                                        onclick="event.stopPropagation(); showSection('buy')">🛒 Browse Books</button>
+                                    <button class="btn btn-secondary"
+                                        onclick="event.stopPropagation(); showSection('sell')">💰 Sell a Book</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Box 2: StudyVault / Resources -->
+                        <div class="action-box action-box-vault" onclick="showSection('vault')">
+                            <div class="action-box-bg action-box-bg-vault">
+                                <div class="vault-icons">
+                                    <span>📝</span><span>📄</span><span>📋</span><span>📊</span>
+                                    <span>✅</span><span>❓</span><span>💻</span><span>🔬</span>
+                                </div>
+                            </div>
+                            <div class="action-box-content">
+                                <div class="action-box-icon">📝</div>
+                                <h2>StudyVault — Resources</h2>
+                                <p>Upload & share notes, PDFs, assignments, question papers, coding resources.
+                                    Everything a student needs, in one place.</p>
+                                <div class="action-box-actions">
+                                    <button class="btn btn-primary"
+                                        onclick="event.stopPropagation(); showSection('vault')">📂 Browse
+                                        Resources</button>
+                                    <button class="btn btn-secondary"
+                                        onclick="event.stopPropagation(); openUploadModal()">⬆️ Upload Notes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ═══ BUY BOOKS ═══ -->
+                <section id="buySection" class="hidden">
+                    <div class="page-header">
+                        <h2>📖 Browse Books</h2>
+                        <button class="btn btn-secondary btn-sm" onclick="showSection('dashboard')">← Back to
+                            Home</button>
+                    </div>
+
+                    <div class="filters-bar">
+                        <input type="text" class="form-input" id="buySearch" placeholder="🔍 Search title or author..."
+                            oninput="debouncedLoadBooks()">
+                        <select class="form-select" id="buyCategory" onchange="loadBooks()">
+                            <option value="">All Categories</option>
+                            <option value="engineering">Engineering</option>
+                            <option value="medical">Medical</option>
+                            <option value="competitive">Competitive Exams</option>
+                            <option value="school">School</option>
+                            <option value="arts">Arts</option>
+                            <option value="science">Science</option>
+                            <option value="commerce">Commerce</option>
+                            <option value="law">Law</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <select class="form-select" id="buyCondition" onchange="loadBooks()">
+                            <option value="">All Conditions</option>
+                            <option value="new">New</option>
+                            <option value="like_new">Like New</option>
+                            <option value="good">Good</option>
+                            <option value="fair">Fair</option>
+                            <option value="poor">Poor</option>
+                        </select>
+                        <input type="number" class="form-input" id="buyMaxPrice" placeholder="Max Price ₹"
+                            style="max-width:140px;" oninput="debouncedLoadBooks()">
+                    </div>
+
+                    <div class="books-grid" id="booksGrid"></div>
+                    <div id="booksPagination" class="pagination"></div>
+                </section>
+
+                <!-- ═══ SELL BOOKS ═══ -->
+                <section id="sellSection" class="hidden">
+                    <div class="page-header">
+                        <h2>💰 My Book Listings</h2>
+                        <div class="flex gap-sm">
+                            <button class="btn btn-secondary btn-sm" onclick="showSection('dashboard')">← Back to
+                                Home</button>
+                            <button class="btn btn-primary" onclick="openSellModal()">+ List a Book</button>
+                        </div>
+                    </div>
+
+                    <div class="books-grid" id="myBooksGrid"></div>
+
+                    <div id="myBooksEmpty" class="empty-state hidden">
+                        <div class="empty-state-icon">📦</div>
+                        <h3>No books listed yet</h3>
+                        <p>List your first book and start selling!</p>
+                        <button class="btn btn-primary" style="margin-top:16px" onclick="openSellModal()">+ List a
+                            Book</button>
+                    </div>
+                </section>
+
+                <!-- ═══ STUDYVAULT ═══ -->
+                <section id="vaultSection" class="hidden">
+                    <div class="page-header">
+                        <h2>📝 StudyVault — Resources Hub</h2>
+                        <div class="flex gap-sm">
+                            <button class="btn btn-secondary btn-sm" onclick="showSection('dashboard')">← Back to
+                                Home</button>
+                            <button class="btn btn-primary" onclick="openUploadModal()">+ Upload Resource</button>
+                        </div>
+                    </div>
+
+                    <div class="filters-bar">
+                        <input type="text" class="form-input" id="vaultSearch" placeholder="🔍 Search resources..."
+                            oninput="debouncedLoadResources()">
+                        <select class="form-select" id="vaultType" onchange="loadResources()">
+                            <option value="">All Types</option>
+                            <option value="notes">Notes</option>
+                            <option value="pdf">PDF</option>
+                            <option value="assignment">Assignment</option>
+                            <option value="question_paper">Question Paper</option>
+                            <option value="solution">Solution</option>
+                            <option value="presentation">Presentation</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <input type="text" class="form-input" id="vaultSubject" placeholder="Subject..."
+                            oninput="debouncedLoadResources()">
+                    </div>
+
+                    <div class="resources-grid" id="resourcesGrid"></div>
+                    <div id="resourcesPagination" class="pagination"></div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- ═══ SELL BOOK MODAL ═══ -->
+    <div class="modal-overlay" id="sellModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="sellModalTitle">List a Book for Sale</h2>
+                <button class="modal-close" onclick="closeModal('sellModal')">&times;</button>
+            </div>
+            <form onsubmit="handleSellBook(event)">
+                <div class="form-group">
+                    <label>Book Title *</label>
+                    <input type="text" class="form-input" id="sellTitle" placeholder="e.g. Engineering Mathematics"
+                        required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Author *</label>
+                        <input type="text" class="form-input" id="sellAuthor" placeholder="Author name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Price (₹) *</label>
+                        <input type="number" class="form-input" id="sellPrice" placeholder="250" required min="0">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select class="form-select" id="sellCategory">
+                            <option value="engineering">Engineering</option>
+                            <option value="medical">Medical</option>
+                            <option value="competitive">Competitive Exams</option>
+                            <option value="school">School</option>
+                            <option value="arts">Arts</option>
+                            <option value="science">Science</option>
+                            <option value="commerce">Commerce</option>
+                            <option value="law">Law</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Condition</label>
+                        <select class="form-select" id="sellCondition">
+                            <option value="new">New</option>
+                            <option value="like_new">Like New</option>
+                            <option value="good" selected>Good</option>
+                            <option value="fair">Fair</option>
+                            <option value="poor">Poor</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Subject</label>
+                        <input type="text" class="form-input" id="sellSubject" placeholder="e.g. Mathematics">
+                    </div>
+                    <div class="form-group">
+                        <label>Semester</label>
+                        <input type="text" class="form-input" id="sellSemester" placeholder="e.g. 3rd">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea class="form-textarea" id="sellDescription"
+                        placeholder="Describe the book's condition, edition, etc."></textarea>
+                </div>
+                <input type="hidden" id="sellBookId" value="">
+                <button type="submit" class="btn btn-primary btn-lg" style="width:100%;" id="sellSubmitBtn">List
+                    Book</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ═══ UPLOAD RESOURCE MODAL ═══ -->
+    <div class="modal-overlay" id="uploadModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Upload Study Resource</h2>
+                <button class="modal-close" onclick="closeModal('uploadModal')">&times;</button>
+            </div>
+            <form onsubmit="handleUploadResource(event)">
+                <div class="form-group">
+                    <label>Title *</label>
+                    <input type="text" class="form-input" id="uploadTitle" placeholder="e.g. DSA Notes Sem 3" required>
+                </div>
+                <div class="form-group">
+                    <label>File *</label>
+                    <input type="file" class="form-input" id="uploadFile" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select class="form-select" id="uploadType">
+                            <option value="notes">Notes</option>
+                            <option value="pdf">PDF</option>
+                            <option value="assignment">Assignment</option>
+                            <option value="question_paper">Question Paper</option>
+                            <option value="solution">Solution</option>
+                            <option value="presentation">Presentation</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <input type="text" class="form-input" id="uploadCategory" placeholder="e.g. Engineering">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Subject</label>
+                        <input type="text" class="form-input" id="uploadSubject" placeholder="e.g. OS">
+                    </div>
+                    <div class="form-group">
+                        <label>Semester</label>
+                        <input type="text" class="form-input" id="uploadSemester" placeholder="e.g. 5th">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Tags (comma-separated)</label>
+                    <input type="text" class="form-input" id="uploadTags" placeholder="e.g. dsa, algorithms, trees">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea class="form-textarea" id="uploadDescription"
+                        placeholder="Describe the resource..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg" style="width:100%;" id="uploadSubmitBtn">Upload
+                    Resource</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

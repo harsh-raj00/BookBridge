@@ -1,77 +1,83 @@
+"""
+BookBridge API — Main application entry point.
 
+A platform for buying/selling academic books and sharing study resources.
+Built with FastAPI, SQLAlchemy, and JWT authentication.
+"""
 
+import logging
+from pathlib import Path
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+
+from .config import get_settings
 from .database import engine, Base
-from . import models
+from .middleware import setup_middleware
 
-from fastapi import Depends
-from sqlalchemy.orm import Session
-from .database import get_db
-from .schemas import UserCreate, UserResponse
+# Import all models so SQLAlchemy can create tables
+from .models import User, Book, Resource  # noqa: F401
 
+from .routers import auth, users, books, resources
 
-from fastapi import HTTPException
-from .auth import verify_password, create_access_token
-from .auth import hash_password
-from .schemas import LoginRequest
-from .auth import get_current_user
-from .models import User
+# ─── Logging Configuration ────────────────────────────────────────────
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)-8s | %(name)s | %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
+logger = logging.getLogger("bookbridge")
 
+# ─── Application Factory ──────────────────────────────────────────────
+settings = get_settings()
 
+app = FastAPI(
+    title=settings.APP_NAME,
+    version=settings.APP_VERSION,
+    description=(
+        "**BookBridge** is a platform where students can buy/sell academic books "
+        "and share study resources (notes, PDFs, assignments) in one centralized system.\n\n"
+        "### Features\n"
+        "- 📚 **Book Marketplace** — List, browse, and buy books with category & condition filters\n"
+        "- 📝 **StudyVault** — Upload and share notes, PDFs, assignments\n"
+        "- 🔐 **JWT Authentication** — Secure user accounts\n"
+        "- 👤 **User Profiles** — College, year, and contact info\n"
+    ),
+    docs_url="/docs",
+    redoc_url="/redoc",
+)
+
+# ─── Setup ─────────────────────────────────────────────────────────────
+# Create all database tables
 Base.metadata.create_all(bind=engine)
 
-from fastapi import FastAPI
-app = FastAPI(title="BookBridge API")
+# Configure middleware
+setup_middleware(app)
+
+# ─── Register Routers ─────────────────────────────────────────────────
+app.include_router(auth.router)
+app.include_router(users.router)
+app.include_router(books.router)
+app.include_router(resources.router)
 
 
-@app.get("/")
+# ─── Root & Health Endpoints ───────────────────────────────────────────
+@app.get("/", tags=["System"])
 def root():
-    return {"message": "Welcome to the BookBridge and Backend Running!"}
-
-from .models import User
-
-@app.post("/register", response_model=UserResponse)
-def register(user: UserCreate, db: Session = Depends(get_db)):
-    
-    # Check if email already exists
-    existing_user = db.query(User).filter(User.email == user.email).first()
-    if existing_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
-
-    new_user = User(
-        name=user.name,
-        email=user.email,
-        password=hash_password(user.password)
-    )
-
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-
-    return new_user
-
-@app.post("/login")
-def login(user: LoginRequest, db: Session = Depends(get_db)):
-
-    db_user = db.query(User).filter(
-        User.email == user.email
-    ).first()
-
-    if not db_user:
-        raise HTTPException(status_code=400, detail="User not found")
-
-    if not verify_password(user.password, db_user.password):
-        raise HTTPException(status_code=400, detail="Invalid password")
-
-    token = create_access_token({"sub": db_user.email})
-
+    """Welcome endpoint."""
     return {
-        "access_token": token,
-        "token_type": "bearer"
+        "message": "Welcome to BookBridge API 📚",
+        "version": settings.APP_VERSION,
+        "docs": "/docs",
     }
 
-@app.get("/profile")
-def get_profile(current_user: User = Depends(get_current_user)):
-    return {
-        "message": "Authorized access",
-        "email": current_user.email
-    }
+
+@app.get("/health", tags=["System"])
+def health_check():
+    """Health check endpoint for monitoring and load balancers."""
+    return {"status": "healthy", "version": settings.APP_VERSION}
+
+
+# ─── Serve Frontend Static Files ──────────────────────────────────────
+FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
+if FRONTEND_DIR.exists():
+    app.mount("/frontend", StaticFiles(directory=str(FRONTEND_DIR), html=True), name="frontend")

@@ -1,16 +1,34 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker,declarative_base
+"""
+Database engine, session management, and base model.
+Uses SQLAlchemy with connection pooling and proper session lifecycle.
+"""
 
-DATABASE_URL="sqlite:///./bookbridge.db"
-engine = create_engine(DATABASE_URL,connect_args={"check_same_thread":False})
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base, Session
+from .config import get_settings
+
+settings = get_settings()
+
+# Engine configuration
+# - check_same_thread=False required for SQLite with FastAPI's async concurrency
+# - pool_pre_ping ensures stale connections are recycled
+engine = create_engine(
+    settings.DATABASE_URL,
+    connect_args={"check_same_thread": False} if "sqlite" in settings.DATABASE_URL else {},
+    pool_pre_ping=True,
+    echo=settings.DEBUG,
+)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
 Base = declarative_base()
 
 
-from sqlalchemy.orm import Session
-
 def get_db():
+    """
+    Dependency that provides a database session per request.
+    Ensures the session is properly closed after the request completes.
+    """
     db = SessionLocal()
     try:
         yield db
