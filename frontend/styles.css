@@ -1,46 +1,46 @@
 /* ═══════════════════════════════════════════════════════════════════
    BookBridge — Design System
-   Premium dark theme with teal/emerald accent colors
+   Orange & White light theme
    ═══════════════════════════════════════════════════════════════════ */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 /* ─── CSS Variables ─────────────────────────────────────────────── */
 :root {
-    /* Colors */
-    --bg-primary: #0a0f1a;
-    --bg-secondary: #111827;
-    --bg-card: #1a2332;
-    --bg-card-hover: #1f2b3d;
-    --bg-input: #0d1421;
+    /* Colors — light white/orange */
+    --bg-primary: #fff8f2;
+    --bg-secondary: #ffffff;
+    --bg-card: #ffffff;
+    --bg-card-hover: #fff3ea;
+    --bg-input: #fef3eb;
 
-    --text-primary: #f1f5f9;
-    --text-secondary: #94a3b8;
-    --text-muted: #64748b;
+    --text-primary: #1a0f06;
+    --text-secondary: #6b4c33;
+    --text-muted: #a07050;
 
-    --accent: #14b8a6;
-    --accent-light: #2dd4bf;
-    --accent-dark: #0d9488;
-    --accent-glow: rgba(20, 184, 166, 0.2);
+    --accent: #f97316;
+    --accent-light: #fb923c;
+    --accent-dark: #ea6c0a;
+    --accent-glow: rgba(249, 115, 22, 0.18);
 
-    --success: #22c55e;
-    --warning: #f59e0b;
-    --danger: #ef4444;
-    --info: #3b82f6;
+    --success: #16a34a;
+    --warning: #d97706;
+    --danger: #dc2626;
+    --info: #f97316;
 
-    --border: #1e293b;
-    --border-light: #334155;
+    --border: #fde8d4;
+    --border-light: #fbd4b0;
 
     /* Gradients */
-    --gradient-main: linear-gradient(135deg, #14b8a6 0%, #3b82f6 100%);
-    --gradient-card: linear-gradient(145deg, #1a2332 0%, #111827 100%);
-    --gradient-hero: linear-gradient(135deg, #0a0f1a 0%, #1a1a2e 50%, #0a0f1a 100%);
+    --gradient-main: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
+    --gradient-card: linear-gradient(145deg, #ffffff 0%, #fff8f2 100%);
+    --gradient-hero: linear-gradient(135deg, #fff8f2 0%, #ffeede 50%, #fff8f2 100%);
 
-    /* Shadows */
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.5);
-    --shadow-glow: 0 0 20px rgba(20, 184, 166, 0.15);
+    /* Shadows — softer for light bg */
+    --shadow-sm: 0 1px 4px rgba(249, 115, 22, 0.08);
+    --shadow-md: 0 4px 16px rgba(249, 115, 22, 0.12);
+    --shadow-lg: 0 8px 32px rgba(249, 115, 22, 0.16);
+    --shadow-glow: 0 0 20px rgba(249, 115, 22, 0.20);
 
     /* Spacing */
     --radius-sm: 8px;
@@ -362,22 +362,75 @@ a:hover {
     overflow: hidden;
 }
 
+/* Background image — full bleed behind login */
 .auth-bg {
     position: absolute;
     inset: 0;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    filter: blur(2px);
+    z-index: 0;
+}
+
+.auth-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(2px) brightness(0.45);
     transform: scale(1.05);
 }
 
+/* Light warm overlay — keeps bg visible but lets white cards pop */
 .auth-bg-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(10, 15, 26, 0.88) 0%, rgba(17, 24, 39, 0.92) 50%, rgba(10, 15, 26, 0.88) 100%);
+    z-index: 1;
+    background: linear-gradient(135deg,
+            rgba(255, 248, 242, 0.70) 0%,
+            rgba(255, 237, 213, 0.60) 40%,
+            rgba(255, 248, 242, 0.75) 100%);
 }
 
+/* Floating book emoji animations */
+.floating-books {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.float-book {
+    position: absolute;
+    bottom: -60px;
+    left: var(--x, 50%);
+    font-size: 2rem;
+    opacity: 0;
+    animation: floatUp var(--dur, 18s) var(--delay, 0s) infinite ease-in-out;
+}
+
+@keyframes floatUp {
+    0% {
+        opacity: 0;
+        transform: translateY(0) rotate(0deg);
+    }
+
+    10% {
+        opacity: 0.25;
+    }
+
+    50% {
+        opacity: 0.15;
+    }
+
+    90% {
+        opacity: 0.05;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-110vh) rotate(360deg);
+    }
+}
+
+/* Radial glow behind card */
 .auth-page::before {
     content: '';
     position: absolute;
@@ -385,9 +438,9 @@ a:hover {
     left: -50%;
     width: 200%;
     height: 200%;
-    z-index: 1;
-    background: radial-gradient(circle at 30% 50%, rgba(20, 184, 166, 0.08) 0%, transparent 50%),
-        radial-gradient(circle at 70% 50%, rgba(59, 130, 246, 0.08) 0%, transparent 50%);
+    z-index: 2;
+    background: radial-gradient(circle at 30% 50%, rgba(249, 115, 22, 0.10) 0%, transparent 50%),
+        radial-gradient(circle at 70% 50%, rgba(239, 68, 68, 0.08) 0%, transparent 50%);
     animation: float 20s ease-in-out infinite;
 }
 
@@ -409,19 +462,75 @@ a:hover {
 
 .auth-container {
     position: relative;
-    z-index: 2;
+    z-index: 3;
     width: 100%;
     max-width: 440px;
     padding: 0 24px;
 }
 
 .auth-card {
-    background: rgba(26, 35, 50, 0.75);
-    backdrop-filter: blur(24px);
-    border: 1px solid rgba(30, 41, 59, 0.6);
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(28px) saturate(1.4);
+    -webkit-backdrop-filter: blur(28px) saturate(1.4);
+    border: 1px solid rgba(249, 115, 22, 0.25);
     border-radius: var(--radius-xl);
     padding: 40px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    box-shadow:
+        0 20px 60px rgba(249, 115, 22, 0.15),
+        0 0 40px rgba(249, 115, 22, 0.10),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    animation: cardAppear 0.8s ease-out;
+}
+
+@keyframes cardAppear {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ─── App Page Background (post-login) ─────────────────────────── */
+.app-page {
+    position: relative;
+    min-height: 100vh;
+}
+
+.app-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.app-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(3px) brightness(0.85);
+    transform: scale(1.05);
+}
+
+.app-bg-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(160deg,
+            rgba(255, 248, 242, 0.82) 0%,
+            rgba(255, 237, 213, 0.75) 50%,
+            rgba(255, 248, 242, 0.85) 100%);
+}
+
+/* Ensure navbar and content sit above the bg */
+.app-page .navbar,
+.app-page .main-content {
+    position: relative;
+    z-index: 1;
 }
 
 .auth-logo {
@@ -432,7 +541,7 @@ a:hover {
 .auth-logo-icon {
     font-size: 3.5rem;
     margin-bottom: 8px;
-    filter: drop-shadow(0 4px 12px rgba(20, 184, 166, 0.3));
+    filter: drop-shadow(0 4px 12px rgba(249, 115, 22, 0.35));
 }
 
 .auth-logo h1 {
@@ -507,7 +616,7 @@ a:hover {
 .action-box:hover {
     transform: translateY(-6px);
     border-color: var(--accent);
-    box-shadow: 0 12px 40px rgba(20, 184, 166, 0.2);
+    box-shadow: 0 12px 40px rgba(249, 115, 22, 0.22);
 }
 
 .action-box-bg {
@@ -533,11 +642,11 @@ a:hover {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, rgba(10, 15, 26, 0.4) 0%, rgba(10, 15, 26, 0.95) 100%);
+    background: linear-gradient(180deg, rgba(255, 248, 242, 0.1) 0%, rgba(249, 115, 22, 0.75) 100%);
 }
 
 .action-box-bg-vault {
-    background: linear-gradient(135deg, #0f172a, #1e1b4b);
+    background: linear-gradient(135deg, #fff3e8, #ffdfc0);
 }
 
 .vault-icons {

@@ -17,9 +17,23 @@
          AUTH PAGE — Book background + glassmorphism login card
          ═══════════════════════════════════════════════════════════════ -->
     <div id="authPage" class="auth-page">
-        <!-- Book background image -->
-        <div class="auth-bg" style="background-image: url('books_bg.png');"></div>
+        <!-- Background Image + Overlay -->
+        <div class="auth-bg">
+            <img src="bg-library.png" alt="Library Background">
+        </div>
         <div class="auth-bg-overlay"></div>
+
+        <!-- Floating Book Animations -->
+        <div class="floating-books">
+            <span class="float-book" style="--delay:0s; --x:10%; --dur:18s;">📖</span>
+            <span class="float-book" style="--delay:2s; --x:25%; --dur:22s;">📚</span>
+            <span class="float-book" style="--delay:4s; --x:45%; --dur:16s;">📕</span>
+            <span class="float-book" style="--delay:1s; --x:65%; --dur:20s;">📗</span>
+            <span class="float-book" style="--delay:3s; --x:80%; --dur:24s;">📘</span>
+            <span class="float-book" style="--delay:5s; --x:90%; --dur:19s;">📙</span>
+            <span class="float-book" style="--delay:2.5s; --x:35%; --dur:21s;">🎓</span>
+            <span class="float-book" style="--delay:4.5s; --x:55%; --dur:17s;">✏️</span>
+        </div>
 
         <div class="auth-container">
             <div class="auth-card">
@@ -78,7 +92,13 @@
     <!-- ═══════════════════════════════════════════════════════════════
          APP (after login)
          ═══════════════════════════════════════════════════════════════ -->
-    <div id="appPage" class="hidden">
+    <div id="appPage" class="hidden app-page">
+        <!-- Background image — same as auth page, behind all content -->
+        <div class="app-bg">
+            <img src="bg-library.png" alt="Library Background">
+        </div>
+        <div class="app-bg-overlay"></div>
+
         <!-- Navbar -->
         <nav class="navbar">
             <div class="navbar-brand">
@@ -133,9 +153,6 @@
                     <div class="two-boxes">
                         <!-- Box 1: Buy & Sell Books -->
                         <div class="action-box action-box-books" onclick="showSection('buy')">
-                            <div class="action-box-bg">
-                                <img src="books_bg.png" alt="Books">
-                            </div>
                             <div class="action-box-content">
                                 <div class="action-box-icon">📖</div>
                                 <h2>Buy & Sell Books</h2>

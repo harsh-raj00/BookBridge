@@ -61,14 +61,12 @@ app.include_router(resources.router)
 
 
 # ─── Root & Health Endpoints ───────────────────────────────────────────
-@app.get("/", tags=["System"])
+from fastapi.responses import RedirectResponse
+
+@app.get("/", tags=["System"], include_in_schema=False)
 def root():
-    """Welcome endpoint."""
-    return {
-        "message": "Welcome to BookBridge API 📚",
-        "version": settings.APP_VERSION,
-        "docs": "/docs",
-    }
+    """Redirect root to frontend."""
+    return RedirectResponse(url="/frontend/index.html")
 
 
 @app.get("/health", tags=["System"])
