@@ -14,7 +14,9 @@ settings = get_settings()
 # - pool_pre_ping ensures stale connections are recycled
 db_url = settings.DATABASE_URL
 if db_url.startswith("postgres://"):
-    db_url = db_url.replace("postgres://", "postgresql://", 1)
+    db_url = db_url.replace("postgres://", "postgresql+pg8000://", 1)
+elif db_url.startswith("postgresql://"):
+    db_url = db_url.replace("postgresql://", "postgresql+pg8000://", 1)
 
 engine = create_engine(
     db_url,
