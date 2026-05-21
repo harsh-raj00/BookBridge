@@ -4,6 +4,7 @@ Loads all environment variables from .env file.
 """
 
 import os
+from pydantic import field_validator
 from pydantic_settings import BaseSettings
 from functools import lru_cache
 
@@ -27,7 +28,20 @@ class Settings(BaseSettings):
     MAX_FILE_SIZE_MB: int = 10
 
     # CORS
-    ALLOWED_ORIGINS: list[str] = ["http://localhost:3000", "http://localhost:5173"]
+    ALLOWED_ORIGINS: list[str] = [
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "http://127.0.0.1:8000",
+        "http://localhost:8000",
+        "https://bookbridge-xh39.onrender.com"
+    ]
+
+    @field_validator("ALLOWED_ORIGINS", mode="before")
+    @classmethod
+    def parse_allowed_origins(cls, v):
+        if isinstance(v, str):
+            return [origin.strip() for origin in v.split(",") if origin.strip()]
+        return v
 
     class Config:
         env_file = ".env"

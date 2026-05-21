@@ -1,0 +1,19 @@
+# Render Infrastructure Blueprint Configuration
+# Learn more at https://render.com/docs/blueprints
+
+services:
+  - type: web
+    name: bookbridge
+    env: docker
+    plan: free
+    envVars:
+      - key: DATABASE_URL
+        value: sqlite:///./bookbridge.db
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "60"
+      - key: ALLOWED_ORIGINS
+        value: "https://bookbridge-xh39.onrender.com,http://localhost:3000,http://localhost:5173,http://localhost:8000,http://127.0.0.1:8000"

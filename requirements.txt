@@ -7,6 +7,7 @@ email-validator==2.2.0
 
 # Database
 SQLAlchemy==2.0.35
+psycopg2-binary==2.9.9
 
 # Authentication
 passlib[bcrypt]==1.7.4

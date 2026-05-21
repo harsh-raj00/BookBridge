@@ -21,5 +21,5 @@ RUN mkdir -p uploads
 # Expose the port
 EXPOSE 8000
 
-# Run with uvicorn
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Run with uvicorn using shell form to dynamically respect the PORT environment variable assigned by Render
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
