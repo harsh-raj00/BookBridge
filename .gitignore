@@ -26,16 +26,25 @@ env/
 *.db
 
 # Uploads (keep folder, ignore files)
-uploads/*
+uploads/**
 !uploads/.gitkeep
 
 # OS
 .DS_Store
 Thumbs.db
 
-.*md
+# Documentation: ignore local guides
 RESUME_GUIDE.md
-INTERVIEW_GUIDE.MD
+INTERVIEW_GUIDE.md
+# Testing / tooling
+.pytest_cache/
+.coverage
+.mypy_cache/
+pip-wheel-metadata/
+.cache/
+*.sqlite3
+.env.local
+.env.*
 
 
 
