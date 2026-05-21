@@ -16,13 +16,35 @@ Base.metadata.create_all(bind=engine)
 def seed():
     db = SessionLocal()
 
+    # Create dummy files on disk so they are downloadable (ensure they exist even if DB already has records)
+    import os
+    os.makedirs("uploads", exist_ok=True)
+    sample_files = {
+        "uploads/sample_dsa.pdf": ("DSA Complete Notes - Semester 3", "Handwritten notes covering arrays, linked lists, trees, graphs, sorting, and dynamic programming."),
+        "uploads/sample_os.pdf": ("Operating Systems PYQ 2020-2024", "Previous Year Questions with solutions for OS course."),
+        "uploads/sample_dbms.pdf": ("DBMS Lab Assignment Solutions", "All lab assignments with SQL queries and ER diagrams."),
+        "uploads/sample_anatomy.pdf": ("Anatomy Diagrams - Upper Limb", "Detailed diagrams with labels for upper limb anatomy."),
+        "uploads/sample_physio.pdf": ("Physiology MCQs with Answers", "500+ MCQs for physiology exam preparation."),
+        "uploads/sample_python.pdf": ("Python Programming Cheat Sheet", "Quick reference for Python syntax, data structures, and common patterns."),
+        "uploads/sample_accounts.pdf": ("Accounting Standards Summary", "Summary of all important accounting standards for B.Com."),
+        "uploads/sample_cat.pdf": ("CAT 2024 Mock Test Paper", "Full-length CAT mock test with answer key.")
+    }
+    for file_path, (title, desc) in sample_files.items():
+        if not os.path.exists(file_path):
+            try:
+                with open(file_path, "w", encoding="utf-8") as f:
+                    f.write(f"This is a sample study resource file for BookBridge.\n\nTitle: {title}\nDescription: {desc}\n")
+                print(f"  Generated dummy file: {file_path}")
+            except Exception as e:
+                print(f"  Could not create dummy file {file_path}: {e}")
+
     # Check if already seeded
     if db.query(User).count() > 0:
-        print("⚠️  Database already has data. Skipping seed.")
+        print("Database already has data. Skipping seed.")
         db.close()
         return
 
-    print("🌱 Seeding database...")
+    print("Seeding database...")
 
     # ─── Create Demo Users ────────────────────────────────────────
     users = [
@@ -56,7 +78,7 @@ def seed():
     for u in users:
         db.refresh(u)
 
-    print(f"  ✅ Created {len(users)} demo users")
+    print(f"  Created {len(users)} demo users")
 
     # ─── Create Sample Books ──────────────────────────────────────
     books = [
@@ -88,7 +110,7 @@ def seed():
     db.add_all(books)
     db.commit()
 
-    print(f"  ✅ Created {len(books)} sample books")
+    print(f"  Created {len(books)} sample books")
 
     # ─── Create Sample Resources ──────────────────────────────────
     resources = [
@@ -104,9 +126,19 @@ def seed():
     db.add_all(resources)
     db.commit()
 
-    print(f"  ✅ Created {len(resources)} sample resources")
-    print("\n🎉 Database seeded successfully!")
-    print("\n📧 Demo login credentials:")
+    # Create dummy files on disk so they are downloadable
+    import os
+    os.makedirs("uploads", exist_ok=True)
+    for r in resources:
+        try:
+            with open(r.file_path, "w", encoding="utf-8") as f:
+                f.write(f"This is a sample study resource file for BookBridge.\n\nTitle: {r.title}\nDescription: {r.description}\nType: {r.file_type}\nCategory: {r.category}\nSubject: {r.subject}\n")
+        except Exception as e:
+            print(f"  Could not create dummy file {r.file_path}: {e}")
+
+    print(f"  Created {len(resources)} sample resources")
+    print("\nDatabase seeded successfully!")
+    print("\nDemo login credentials:")
     print("   rahul@bookbridge.com / demo123  (Engineering)")
     print("   priya@bookbridge.com / demo123  (Medical)")
     print("   amit@bookbridge.com  / demo123  (Commerce)")

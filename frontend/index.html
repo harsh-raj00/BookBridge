@@ -153,11 +153,15 @@
                     <div class="two-boxes">
                         <!-- Box 1: Buy & Sell Books -->
                         <div class="action-box action-box-books" onclick="showSection('buy')">
+                            <div class="action-box-bg">
+                                <img src="books_bg.png" alt="Books Background">
+                            </div>
                             <div class="action-box-content">
-                                <div class="action-box-icon">📖</div>
-                                <h2>Buy & Sell Books</h2>
-                                <p>Browse & buy affordable textbooks or list your used books for sale. Engineering,
-                                    Medical, Competitive Exams & more.</p>
+                                <div class="action-box-text-container">
+                                    <div class="action-box-icon">📖</div>
+                                    <h2>Buy & Sell Books</h2>
+                                    <p>Browse & buy affordable textbooks or list your used books for sale. Engineering, Medical, Competitive Exams & more.</p>
+                                </div>
                                 <div class="action-box-actions">
                                     <button class="btn btn-primary"
                                         onclick="event.stopPropagation(); showSection('buy')">🛒 Browse Books</button>
@@ -169,21 +173,18 @@
 
                         <!-- Box 2: StudyVault / Resources -->
                         <div class="action-box action-box-vault" onclick="showSection('vault')">
-                            <div class="action-box-bg action-box-bg-vault">
-                                <div class="vault-icons">
-                                    <span>📝</span><span>📄</span><span>📋</span><span>📊</span>
-                                    <span>✅</span><span>❓</span><span>💻</span><span>🔬</span>
-                                </div>
+                            <div class="action-box-bg">
+                                <div class="vault-grid-pattern"></div>
                             </div>
                             <div class="action-box-content">
-                                <div class="action-box-icon">📝</div>
-                                <h2>StudyVault — Resources</h2>
-                                <p>Upload & share notes, PDFs, assignments, question papers, coding resources.
-                                    Everything a student needs, in one place.</p>
+                                <div class="action-box-text-container">
+                                    <div class="action-box-icon">📝</div>
+                                    <h2>StudyVault — Resources</h2>
+                                    <p>Upload & share notes, PDFs, assignments, question papers, coding resources. Everything a student needs, in one place.</p>
+                                </div>
                                 <div class="action-box-actions">
                                     <button class="btn btn-primary"
-                                        onclick="event.stopPropagation(); showSection('vault')">📂 Browse
-                                        Resources</button>
+                                        onclick="event.stopPropagation(); showSection('vault')">📂 Browse Resources</button>
                                     <button class="btn btn-secondary"
                                         onclick="event.stopPropagation(); openUploadModal()">⬆️ Upload Notes</button>
                                 </div>

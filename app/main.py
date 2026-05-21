@@ -50,6 +50,14 @@ app = FastAPI(
 # Create all database tables
 Base.metadata.create_all(bind=engine)
 
+# Auto-seed database if empty and guarantee demo files exist
+try:
+    from .seed import seed
+    logger.info("Auto-initializing database seed and ensuring demo files exist...")
+    seed()
+except Exception as seed_err:
+    logger.error(f"Database seeding/file generation skipped or failed: {seed_err}")
+
 # Configure middleware
 setup_middleware(app)
 

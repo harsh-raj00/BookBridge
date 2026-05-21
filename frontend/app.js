@@ -16,6 +16,22 @@ let state = {
     resourcesPage: 1,
 };
 
+function getRelativeImageUrl(url) {
+    if (!url) return "";
+    if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("data:")) {
+        return url;
+    }
+    let cleanUrl = url;
+    if (cleanUrl.startsWith("/frontend/")) {
+        cleanUrl = cleanUrl.substring(10);
+    } else if (cleanUrl.startsWith("frontend/")) {
+        cleanUrl = cleanUrl.substring(9);
+    } else if (cleanUrl.startsWith("/")) {
+        cleanUrl = cleanUrl.substring(1);
+    }
+    return cleanUrl;
+}
+
 // ─── Init on Load ──────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", () => {
     if (state.token && state.user) {
@@ -318,15 +334,19 @@ function renderBookCard(book) {
         school: "School", arts: "Arts", science: "Science", commerce: "Commerce",
         law: "Law", other: "Other"
     };
-    const bookIcons = {
-        engineering: "⚙️", medical: "🏥", competitive: "🏆", school: "🏫",
-        arts: "🎨", science: "🔬", commerce: "💼", law: "⚖️", other: "📖"
+    const categoryCovers = {
+        engineering: "book_engineering.png",
+        medical: "book_medical.png",
+        commerce: "book_commerce.png",
+        competitive: "book_competitive.png",
+        science: "book_science.png",
     };
+    const coverUrl = getRelativeImageUrl(book.image_url) || categoryCovers[book.category] || "book_placeholder.png";
 
     return `
         <div class="book-card">
             <div class="book-card-image">
-                ${bookIcons[book.category] || "📖"}
+                <img src="${coverUrl}" alt="${book.title}" class="book-cover-img">
                 <span class="book-condition-badge">${conditionLabels[book.condition] || book.condition}</span>
             </div>
             <div class="book-card-body">
@@ -411,11 +431,19 @@ async function loadMyBooks() {
 
 function renderMyBookCard(book) {
     const conditionLabels = { new: "New", like_new: "Like New", good: "Good", fair: "Fair", poor: "Poor" };
+    const categoryCovers = {
+        engineering: "book_engineering.png",
+        medical: "book_medical.png",
+        commerce: "book_commerce.png",
+        competitive: "book_competitive.png",
+        science: "book_science.png",
+    };
+    const coverUrl = getRelativeImageUrl(book.image_url) || categoryCovers[book.category] || "book_placeholder.png";
 
     return `
         <div class="book-card">
             <div class="book-card-image">
-                📖
+                <img src="${coverUrl}" alt="${book.title}" class="book-cover-img">
                 <span class="book-condition-badge">${conditionLabels[book.condition] || book.condition}</span>
             </div>
             <div class="book-card-body">
